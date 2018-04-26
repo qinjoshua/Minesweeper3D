@@ -1,11 +1,5 @@
 # Project Deadlines
 
-**GUI** - April 26th, 2018
-**Implement GUI** - May 4th, 2018
-**Backend** - May 4th, 2018
-**Initial Tests** - May 5th, 2018
-**Finalize Backend** - May 7th, 2018
-
 |Goal|Deadline  |
 |--|--|
 | GUI |April 26th, 2018  |
