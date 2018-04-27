@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import java.awt.Panel;
+import java.awt.Polygon;
 import java.awt.geom.Path2D;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
@@ -20,7 +21,6 @@ public class MinesUI {
 
 	private int cells;
 	private JFrame frame;
-	private Graphics graphics;
 
 	/**
 	 * Launch the application.
@@ -51,7 +51,7 @@ public class MinesUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(cells*20, cells*20, cells*85, cells*35); //Save: cells*85, cells*35
+		frame.setBounds(cells*20, cells*20, cells*85, cells*35+50); //Save: cells*85, cells*35+50
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -71,10 +71,9 @@ public class MinesUI {
 		
 		JPanel panel_1 = new JPanel(){
 			public void paint(Graphics g){
-				graphics=g;
 				for(int i=0;i<cells;i++){
 					for(int j=0;j<cells;j++){
-						drawCell((30*cells)+(j*50)-(i*25),(i*25));
+						drawCell(g,(30*cells)+(j*50)-(i*25),(i*25));
 					}
 				}
 			}
@@ -82,11 +81,10 @@ public class MinesUI {
 		frame.getContentPane().add(panel_1, BorderLayout.CENTER);
 		
 	}
-	private void drawCell(int x, int y){
-	    graphics.drawLine(x,y,x+50,y);
-	    graphics.drawLine(x+50,y,x+25,y+25);
-	    graphics.drawLine(x+25,y+25,x-25,y+25);
-	    graphics.drawLine(x-25,y+25,x,y);
+	private void drawCell(Graphics g, int x, int y){
+	    int[] xCords={x,x+50,x+25,x-25};
+	    int[] yCords={y,y,y+25,y+25};
+	    g.drawPolygon(new Polygon(xCords,yCords,4));
 	}
 	public void setCells(int c){
 		cells=c;
