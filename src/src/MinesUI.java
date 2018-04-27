@@ -51,7 +51,7 @@ public class MinesUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(cells*20, cells*20, 375, 214); //Save: cells*85, cells*35
+		frame.setBounds(cells*20, cells*20, cells*85, cells*35); //Save: cells*85, cells*35
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
