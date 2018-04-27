@@ -13,10 +13,10 @@ public class Board {
     private String[][][] dimensions;
 
     public Board(){
-        this.width = 9;
-        this.length = 9;
-        this.height = 9;
-
+        this.width = 4;
+        this.length = 4;
+        this.height = 4;
+        this.numMines = 18;
         createBoard();
     }
 
@@ -69,6 +69,8 @@ public class Board {
 
     }
 
-
+    public String[][][] getDimensions() {
+        return dimensions;
+    }
 
 }
