@@ -1,5 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -28,15 +31,24 @@ public class Help extends JDialog {
 	 * Create the dialog.
 	 */
 	public Help() {
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 1000, 1000);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
-			JTextPane txtpnTest = new JTextPane();
-			txtpnTest.setText("Test");
-			contentPanel.add(txtpnTest);
+			//Still needs work
+			try{Scanner read = new Scanner(new File("Rules.txt"));//Copied for testing, can change
+				JTextPane txtpnTest = new JTextPane();
+				String text="";
+				while(read.hasNextLine()){text+=read.nextLine()+"\n";}
+				txtpnTest.setText(text);
+				contentPanel.add(txtpnTest);
+			}catch(IOException e){
+				JTextPane txtpnTest = new JTextPane();
+				txtpnTest.setText("Error! File not found. :(");
+				contentPanel.add(txtpnTest);
+			}
 		}
 		{
 			JPanel buttonPane = new JPanel();

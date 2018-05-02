@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Path2D;
 import java.awt.BorderLayout;
+import java.awt.Color;
+
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import java.awt.Component;
@@ -19,6 +21,11 @@ import javax.swing.Box;
 import java.awt.Dimension;
 import javax.swing.JToolBar;
 import java.awt.event.MouseAdapter;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
+import javax.swing.Action;
+import javax.swing.JRadioButtonMenuItem;
 
 public class MinesUI implements MouseListener{
 
@@ -27,6 +34,8 @@ public class MinesUI implements MouseListener{
 	private Polygon land[][];
 	private boolean occupied[][];
 	JPanel panel;
+	private Color color=Color.BLACK;
+	private final Action action = new SwingAction();
 
 	/**
 	 * Launch the application.
@@ -48,19 +57,7 @@ public class MinesUI implements MouseListener{
 	 * Create the application.
 	 */
 	public MinesUI(int cell) {
-		cells=cell;
-		land=new Polygon[cells][cells];
-		occupied=new boolean[cells][cells];
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(cells*20, cells*20, cells*85, cells*35+50); //Save: cells*85, cells*35
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -68,11 +65,65 @@ public class MinesUI implements MouseListener{
 		JMenu mnGame = new JMenu("Game");
 		menuBar.add(mnGame);
 		
+		JMenuItem mntmEasy = new JMenuItem("Easy");
+		mntmEasy.addActionListener(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		        initialize(3);
+		    }
+		});
+		mnGame.add(mntmEasy);
+		
+		JMenuItem mntmMedium = new JMenuItem("Medium");
+		mntmMedium.addActionListener(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		        initialize(4);
+		    }
+		});
+		mnGame.add(mntmMedium);
+		
+		JMenuItem mntmHard = new JMenuItem("Hard");
+		mntmHard.addActionListener(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		        initialize(5);
+		    }
+		});
+		mnGame.add(mntmHard);
+		
+		JMenuItem mntmCustom = new JMenuItem("Custom");
+		mntmCustom.addActionListener(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    	//Promts user for cell size (always squared)
+		    	//initialize(c);
+		    }
+		});
+		mnGame.add(mntmCustom);
+		
 		JMenu mnOptions = new JMenu("Options");
 		menuBar.add(mnOptions);
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
+		
+		JMenuItem mntmRules = new JMenuItem("Rules");
+		mntmRules.addActionListener(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    	new Help().setVisible(true);
+		    }
+		});
+		mnHelp.add(mntmRules);
+		
+		initialize(cell);
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize(int c) {
+		cells=c;
+		frame.setBounds(cells*20, cells*20, cells*85, cells*35+50); //Save: cells*85, cells*35
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		land=new Polygon[cells][cells];
+		occupied=new boolean[cells][cells];
 		
 		panel=new JPanel(){
 			public void paintComponent(Graphics g){
@@ -92,7 +143,8 @@ public class MinesUI implements MouseListener{
 							Polygon p=land[i][j];
 							panel=new JPanel(){
 								public void paintComponent(Graphics g){
-									g.drawOval(p.xpoints[0]+6, p.ypoints[0]+3, 20, 20);
+									g.setColor(Color.RED);
+									g.fillOval(p.xpoints[0]+6, p.ypoints[0]+3, 20, 20);
 								}
 							};
 						occupied[i][j]=true;
@@ -116,6 +168,13 @@ public class MinesUI implements MouseListener{
 	}
 	public void setCells(int c){
 		cells=c;
+	}
+	/**
+	 * 
+	 * @param c -color to be changed
+	 */
+	public void setColor(Color c){
+		color=c;
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -144,5 +203,13 @@ public class MinesUI implements MouseListener{
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
 	}
 }
