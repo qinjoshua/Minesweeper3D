@@ -18,9 +18,10 @@ public class SafeCell extends Cell {
 	}
 
 	/**
-	 * Displays the number of miens around it, returns the number of mines around
+	 * onClick - Displays the number of miens around it, returns the number of mines
+	 * around
 	 */
-	public int OnClick() {
+	public int onClick() {
 		int mineCount = 0;
 		// too be implemented later
 		return mineCount;

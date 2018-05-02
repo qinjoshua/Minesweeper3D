@@ -24,14 +24,14 @@ public abstract class Cell {
 	}
 
 	/**
-	 * Turns off clickable
+	 * flagged - Turns off clickable
 	 */
-	public void Flagged() {
+	public void flagged() {
 		clickable = false;
 	}
 
 	/**
-	 * Displays question mark
+	 * Question - Displays question mark
 	 */
 	public void Question() {
 		// replace with mehtod of displaying questionmark
@@ -39,14 +39,14 @@ public abstract class Cell {
 	}
 
 	/**
-	 * Abstract method
+	 * onClick - Abstract method
 	 * 
 	 * @return - int
 	 */
-	public abstract int OnClick();
+	public abstract int onClick();
 
 	/**
-	 * Getter method for Clickable
+	 * getClickable - Getter method for Clickable
 	 * 
 	 * @return - clickable
 	 */
@@ -55,7 +55,7 @@ public abstract class Cell {
 	}
 
 	/**
-	 * Getter method for Mine
+	 * getMine - Getter method for Mine
 	 * 
 	 * @return - mine
 	 */
@@ -64,7 +64,7 @@ public abstract class Cell {
 	}
 
 	/**
-	 * Getter method for State
+	 * getState - Getter method for State
 	 * 
 	 * @return - state
 	 */
@@ -73,7 +73,7 @@ public abstract class Cell {
 	}
 
 	/**
-	 * Setter method for Clickable
+	 * setClickable - Setter method for Clickable
 	 * 
 	 * @param c
 	 *            - clickable
@@ -83,7 +83,7 @@ public abstract class Cell {
 	}
 
 	/**
-	 * Setter method for Mine
+	 * setMine - Setter method for Mine
 	 * 
 	 * @param m
 	 *            - Mine
@@ -93,7 +93,7 @@ public abstract class Cell {
 	}
 
 	/**
-	 * Setter method for State
+	 * setState - Setter method for State
 	 * 
 	 * @param s
 	 *            - State

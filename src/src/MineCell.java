@@ -18,19 +18,19 @@ public class MineCell extends Cell {
 	}
 
 	/**
-	 * Explodes and return -1
+	 * onClick - Explodes and return -1
 	 * 
 	 * @return - returns -1
 	 */
-	public int OnClick() {
-		Explode();
+	public int onClick() {
+		explode();
 		return -1;
 	}
 
 	/**
-	 * Displays explode animation
+	 * explode - Displays explode animation
 	 */
-	public void Explode() {
+	public void explode() {
 		// too be implemented later
 	}
 }
