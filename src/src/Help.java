@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextPane;
+import javax.swing.JScrollPane;
 
 public class Help extends JDialog {
 
@@ -31,7 +32,7 @@ public class Help extends JDialog {
 	 * Create the dialog.
 	 */
 	public Help() {
-		setBounds(100, 100, 1000, 1000);
+		setBounds(0, 0, 900, 775);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -41,29 +42,25 @@ public class Help extends JDialog {
 			try{Scanner read = new Scanner(new File("Rules.txt"));//Copied for testing, can change
 				JTextPane txtpnTest = new JTextPane();
 				String text="";
-				while(read.hasNextLine()){text+=read.nextLine()+"\n";}
+				int bound=0;
+				while(read.hasNext()){
+					String s=read.next();
+					bound+=s.length();
+					if(s.indexOf('.')!=-1){s+="\n";bound=0;}
+					if(s.indexOf(':')!=-1){s+="\n\n";bound=0;}
+					if(bound<125){
+						text+=s+" ";
+					}else{
+						text+="\n"+s+" ";
+						bound=0;
+					}
+				}
 				txtpnTest.setText(text);
 				contentPanel.add(txtpnTest);
 			}catch(IOException e){
 				JTextPane txtpnTest = new JTextPane();
 				txtpnTest.setText("Error! File not found. :(");
 				contentPanel.add(txtpnTest);
-			}
-		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
 			}
 		}
 	}

@@ -33,14 +33,16 @@ public class MinesUI implements MouseListener{
 	private JFrame frame;
 	private Polygon land[][];
 	private boolean occupied[][];
-	JPanel panel;
+	private JPanel panel;
+	private JPanel panelList[][];
 	private Color color=Color.BLACK;
-	private final Action action = new SwingAction();
+	private Graphics graphics;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -68,6 +70,7 @@ public class MinesUI implements MouseListener{
 		JMenuItem mntmEasy = new JMenuItem("Easy");
 		mntmEasy.addActionListener(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    	clearBoard();
 		        initialize(3);
 		    }
 		});
@@ -76,6 +79,7 @@ public class MinesUI implements MouseListener{
 		JMenuItem mntmMedium = new JMenuItem("Medium");
 		mntmMedium.addActionListener(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    	clearBoard();
 		        initialize(4);
 		    }
 		});
@@ -84,6 +88,7 @@ public class MinesUI implements MouseListener{
 		JMenuItem mntmHard = new JMenuItem("Hard");
 		mntmHard.addActionListener(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    	clearBoard();
 		        initialize(5);
 		    }
 		});
@@ -121,12 +126,13 @@ public class MinesUI implements MouseListener{
 	private void initialize(int c) {
 		cells=c;
 		frame.setBounds(cells*20, cells*20, cells*85, cells*35+50); //Save: cells*85, cells*35
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		land=new Polygon[cells][cells];
 		occupied=new boolean[cells][cells];
+		panelList=new JPanel[cells][cells];
 		
 		panel=new JPanel(){
 			public void paintComponent(Graphics g){
+				graphics=g;
 				for(int i=0;i<cells;i++){
 					for(int j=0;j<cells;j++){
 						land[i][j]=drawCell(g,(30*cells)+(j*50)-(i*25),(i*25));
@@ -144,19 +150,22 @@ public class MinesUI implements MouseListener{
 							panel=new JPanel(){
 								public void paintComponent(Graphics g){
 									g.setColor(Color.RED);
-									g.fillOval(p.xpoints[0]+6, p.ypoints[0]+3, 20, 20);
+									g.fillOval(p.xpoints[0]+6, p.ypoints[0]+3, 20, 20);//To be replaced		
 								}
 							};
 						occupied[i][j]=true;
+						panelList[i][j]=panel;
 						}
 					}
 				}
 				frame.getContentPane().add(panel);
+				frame.repaint();
 				frame.revalidate();
 			}
 		});
 		frame.addMouseListener(this);
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
 	private Polygon drawCell(Graphics g, int x, int y){
@@ -165,6 +174,15 @@ public class MinesUI implements MouseListener{
 	    Polygon p=new Polygon(xCords,yCords,4);
 	    g.drawPolygon(p);
 	    return p;
+	}
+	public void clearBoard(){
+		for(int i=0;i<cells;i++){
+			for(int j=0;j<cells;j++){
+				if(occupied[i][j]==true){
+					frame.remove(panelList[i][j]);
+				}
+			}
+		}
 	}
 	public void setCells(int c){
 		cells=c;
@@ -203,13 +221,5 @@ public class MinesUI implements MouseListener{
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
-	}
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-		}
 	}
 }
