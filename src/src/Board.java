@@ -12,8 +12,9 @@ public class Board {
     private int length;
     private int height;
     private int numMines;
-    private String[][][] dimensions;
-    private boolean[][][] hasMine;
+    //private String[][][] dimensions;
+    //private boolean[][][] hasMine;
+    private Cell[][][] board;
 
     /**
      * Default constructor
@@ -56,8 +57,9 @@ public class Board {
             int y= rand.nextInt(width);
             int z = rand.nextInt(height);
 
-            if(hasMine[x][y][z] != true){
-                hasMine[x][y][z] = true;
+            if(board[x][y][z].getMine()==false){
+                Cell mine = new MineCell(0, true);
+                board[x][y][z] = mine;
                 placed++;
             }
         }
@@ -69,19 +71,31 @@ public class Board {
     public void createBoard(){
 
         //initialize 3d Array and set value to default of "-"
-        dimensions = new String[this.length][this.width][this.height];
-        hasMine = new boolean[this.length][this.width][this.height];
+        //dimensions = new String[this.length][this.width][this.height];
+        //hasMine = new boolean[this.length][this.width][this.height];
+
+        board = new Cell[this.length][this.length][this.height];
         for(int i=0; i<this.length; i++){
             for(int j=0; j<this.width; j++){
                 for(int k=0; k<this.height; k++){
-                    dimensions[i][j][k] = "-";
-                    hasMine[i][j][k] = false;
+                    Cell addCell = new SafeCell(1, false);
+                    board[i][j][k] = addCell;
                 }
             }
         }
 
         scramble(); //randomly place the mines by calling on the scramble() method
 
+    }
+
+    public void printBoard(){
+        for(int i=0; i<this.length; i++){
+            for(int j=0; j<this.width; j++){
+                for(int k=0; k<this.height; k++){
+                    System.out.println(Arrays.deepToString(board[i][j][k]));
+                }
+            }
+        }
     }
 
     public void explode(){
@@ -96,8 +110,8 @@ public class Board {
 
     }
 
-    public String[][][] getDimensions() {
-        return dimensions;
+    public Cell[][][] getBoard() {
+        return board;
     }
 
 }
