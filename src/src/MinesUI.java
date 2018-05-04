@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import java.awt.Component;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
 import java.awt.Dimension;
@@ -32,8 +33,8 @@ import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.JRadioButtonMenuItem;
 
-public class MinesUI extends Board {
 
+public class MinesUI extends Board{
 	private int cells;
 	private JFrame frame;
 	private JPanel panel;
@@ -130,12 +131,15 @@ public class MinesUI extends Board {
 		cells = c;
 		frame.setBounds(cells * 20, cells * 20, cells * 85, cells * 35 + 50); // Save:
 																				// cells*85,
-		panel=new JPanel();															// cells*35
+		panel=new JPanel();	
+		panel.setLayout(new GridLayout());
+		// cells*35
 		for (int i = 0; i < cells; i++) {
 			for (int j = 0; j < cells; j++) {
 				int x = (30 * cells) + (j * 50) - (i * 25);
 				int y = i * 25;
 				JButton b = new Buttons(x,y);
+				//JButton b = new JButton();
 				b.setLayout(null);
 				panel.add(b);
 				frame.setContentPane(panel);
@@ -144,8 +148,10 @@ public class MinesUI extends Board {
 						System.out.println(x+" "+y);
 					}
 				});
+				b.setVisible(true);
 			}
 		}
+		
 		frame.repaint();
 		frame.revalidate();
 	}
