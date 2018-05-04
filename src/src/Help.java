@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class Help extends JDialog {
 
@@ -32,7 +33,7 @@ public class Help extends JDialog {
 	 * Create the dialog.
 	 */
 	public Help() {
-		setBounds(0, 0, 900, 775);
+		setBounds(0, 0, 900, 500);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -40,7 +41,6 @@ public class Help extends JDialog {
 		{
 			//Still needs work
 			try{Scanner read = new Scanner(new File("Rules.txt"));//Copied for testing, can change
-				JTextPane txtpnTest = new JTextPane();
 				String text="";
 				int bound=0;
 				while(read.hasNext()){
@@ -55,8 +55,13 @@ public class Help extends JDialog {
 						bound=0;
 					}
 				}
+				JTextArea textArea=new JTextArea(10,20);
+				JScrollPane scrollPane = new JScrollPane(textArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				contentPanel.add(scrollPane);
+				
+				JTextPane txtpnTest = new JTextPane();
+				scrollPane.setViewportView(txtpnTest);
 				txtpnTest.setText(text);
-				contentPanel.add(txtpnTest);
 			}catch(IOException e){
 				JTextPane txtpnTest = new JTextPane();
 				txtpnTest.setText("Error! File not found. :(");
