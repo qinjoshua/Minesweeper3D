@@ -31,10 +31,10 @@ public class MinesUI extends Board implements MouseListener{
 
 	private int cells;
 	private JFrame frame;
-	private Polygon land[][];
-	private boolean occupied[][];
+	private Polygon land[][][];
+	private boolean occupied[][][];
 	private JPanel panel;
-	private JPanel panelList[][];
+	private JPanel panelList[][][];
 	private Color color=Color.BLACK;
 	private Graphics graphics;
 
@@ -124,18 +124,21 @@ public class MinesUI extends Board implements MouseListener{
 	 */
 	private void initialize(int c) {
 		cells=c;
-		Board board=new Board(cells,cells,cells,cells*2);
-		frame.setBounds(cells*20, cells*20, cells*85, cells*35+50); //Save: cells*85, cells*35
-		land=new Polygon[cells][cells];
-		occupied=new boolean[cells][cells];
-		panelList=new JPanel[cells][cells];
+		Board b=new Board(cells,cells,cells,cells*2);
+		b.createBoard();;
+		frame.setBounds(cells*20, cells*20, cells*85, cells*125); //Save: cells*85, cells*35
+		land=new Polygon[cells][cells][cells];
+		occupied=new boolean[cells][cells][cells];
+		panelList=new JPanel[cells][cells][cells];
 		
 		panel=new JPanel(){
 			public void paintComponent(Graphics g){
 				graphics=g;
 				for(int i=0;i<cells;i++){
 					for(int j=0;j<cells;j++){
-						land[i][j]=drawCell(g,(30*cells)+(j*50)-(i*25),(i*25));
+						for(int k=0;k<cells;k++){
+							land[i][j][k]=drawCell(g,(30*cells)+(k*50)-(j*25),(j*25)+(i*25*cells)+10);
+						}
 					}
 				}
 			}
@@ -144,23 +147,31 @@ public class MinesUI extends Board implements MouseListener{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(e.getModifiers()==MouseEvent.BUTTON1_MASK){
+					System.out.println(e.getX()+" "+e.getY());
 					for(int i=0;i<cells;i++){
 						for(int j=0;j<cells;j++){
-							if(land[i][j].contains(e.getX(),e.getY())&&occupied[i][j]!=true){
-								Polygon p=land[i][j];
-								panel=new JPanel(){
-									public void paintComponent(Graphics g){
-										g.setColor(Color.RED);
-										g.fillOval(p.xpoints[0]+6, p.ypoints[0]+3, 20, 20);//To be replaced		
-									}
-								};
-							occupied[i][j]=true;
-							panelList[i][j]=panel;
+							for(int k=0;k<cells;k++){
+								System.out.println(occupied[i][j][k]);
+								if(land[i][j][k].contains(e.getX(),e.getY())&&occupied[i][j][k]!=true){
+									Polygon p=land[i][j][k];
+									if(b.getBoard()[i][j][k]!=new MineCell(-1, true)){
+										int x=i,y=j,z=k;
+										panel=new JPanel(){
+											public void paintComponent(Graphics g){
+												g.drawString(String.valueOf(b.generatePointValue(x, y, z)), p.xpoints[0]+12,p.ypoints[0]+13);
+												//Test t =new Test(p.xpoints[0],p.ypoints[0]);
+												//t.paintComponent(g);
+											}
+										};
+									}else{b.explode();}
+									occupied[i][j][k]=true;
+									panelList[i][j][k]=panel;
+								}else if(e.getModifiers()==MouseEvent.BUTTON3_MASK){
+									//Right click action
+								}
 							}
 						}
 					}
-				}else if(e.getModifiers()==MouseEvent.BUTTON3_MASK){
-					//Right click action
 				}
 				frame.getContentPane().add(panel);
 				frame.repaint();
@@ -182,8 +193,10 @@ public class MinesUI extends Board implements MouseListener{
 	public void clearBoard(){
 		for(int i=0;i<cells;i++){
 			for(int j=0;j<cells;j++){
-				if(occupied[i][j]==true){
-					frame.remove(panelList[i][j]);
+				for(int k=0;k<cells;k++){
+					if(occupied[i][j][k]==true){
+						frame.remove(panelList[i][j][k]);
+					}
 				}
 			}
 		}
