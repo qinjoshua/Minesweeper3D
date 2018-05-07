@@ -41,7 +41,7 @@ public class Help extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
 			//Still needs work
-			try{Scanner read = new Scanner(new File("C:\\Users\\Matthew Pham\\Documents\\APCS\\Minesweeper3D\\Rules.txt"));//Copied for testing, can change
+			try{Scanner read = new Scanner(new File("/Users/phammatthew1786/Desktop/Rules.txt"));//Copied for testing, can change
 				String text="";
 				int bound=0;
 				while(read.hasNext()){
@@ -72,12 +72,7 @@ public class Help extends JDialog {
 			}catch(IOException e){
 				JTextPane txtpnTest = new JTextPane();
 				txtpnTest.setText("Error! File not found. :(");
-				contentPanel.add(txtpnTest);
-				getContentPane().setLayout(new BorderLayout(0, 0));
-
-		        getContentPane().add(scrollPane, BorderLayout.CENTER);
-
-		        scrollPane.setViewportView(txtpnTest);
+				
 
 			}
 		}

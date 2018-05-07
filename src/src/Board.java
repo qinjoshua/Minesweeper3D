@@ -88,6 +88,7 @@ public class Board {
 
     }
 
+    /*
     public void printBoard(){
         for(int i=0; i<this.length; i++){
             for(int j=0; j<this.width; j++){
@@ -97,6 +98,7 @@ public class Board {
             }
         }
     }
+    */
 
     public void explode(){
         //to be implemented later
