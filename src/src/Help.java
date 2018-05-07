@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 public class Help extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	private final JScrollPane scrollPane = new JScrollPane();
 
 	/**
 	 * Launch the application.
@@ -40,7 +41,7 @@ public class Help extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
 			//Still needs work
-			try{Scanner read = new Scanner(new File("Rules.txt"));//Copied for testing, can change
+			try{Scanner read = new Scanner(new File("C:\\Users\\Matthew Pham\\Documents\\APCS\\Minesweeper3D\\Rules.txt"));//Copied for testing, can change
 				String text="";
 				int bound=0;
 				while(read.hasNext()){
@@ -62,10 +63,22 @@ public class Help extends JDialog {
 				JTextPane txtpnTest = new JTextPane();
 				scrollPane.setViewportView(txtpnTest);
 				txtpnTest.setText(text);
+				getContentPane().setLayout(new BorderLayout(0, 0));
+
+		        getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+		        scrollPane.setViewportView(txtpnTest);
+
 			}catch(IOException e){
 				JTextPane txtpnTest = new JTextPane();
 				txtpnTest.setText("Error! File not found. :(");
 				contentPanel.add(txtpnTest);
+				getContentPane().setLayout(new BorderLayout(0, 0));
+
+		        getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+		        scrollPane.setViewportView(txtpnTest);
+
 			}
 		}
 	}
