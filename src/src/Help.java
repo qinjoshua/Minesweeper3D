@@ -44,16 +44,21 @@ public class Help extends JDialog {
 			try{Scanner read = new Scanner(new File("/Users/phammatthew1786/Desktop/Rules.txt"));//Copied for testing, can change
 				String text="";
 				int bound=0;
+				int counter = 0;
 				while(read.hasNext()){
 					String s=read.next();
 					bound+=s.length();
 					if(s.indexOf('.')!=-1){s+="\n";bound=0;}
 					if(s.indexOf(':')!=-1){s+="\n\n";bound=0;}
 					if(bound<125){
-						text+=s+" ";
+					
+						text+= " " + s;
+
 					}else{
+					
 						text+="\n"+s+" ";
 						bound=0;
+						
 					}
 				}
 				JTextArea textArea=new JTextArea(10,20);
@@ -61,6 +66,7 @@ public class Help extends JDialog {
 				contentPanel.add(scrollPane);
 				
 				JTextPane txtpnTest = new JTextPane();
+				txtpnTest.setContentType("HTML/plain");
 				scrollPane.setViewportView(txtpnTest);
 				txtpnTest.setText(text);
 				getContentPane().setLayout(new BorderLayout(0, 0));
