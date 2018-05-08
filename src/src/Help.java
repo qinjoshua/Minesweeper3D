@@ -41,7 +41,7 @@ public class Help extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
 			//Still needs work
-			try{Scanner read = new Scanner(new File("/Users/phammatthew1786/Desktop/Rules.txt"));//Copied for testing, can change
+			try{Scanner read = new Scanner(new File("Rules.txt"));//Copied for testing, can change
 				String text="";
 				int bound=0;
 				int counter = 0;
@@ -67,6 +67,7 @@ public class Help extends JDialog {
 				
 				JTextPane txtpnTest = new JTextPane();
 				txtpnTest.setContentType("HTML/plain");
+				txtpnTest.setEditable(false);
 				scrollPane.setViewportView(txtpnTest);
 				txtpnTest.setText(text);
 				getContentPane().setLayout(new BorderLayout(0, 0));
