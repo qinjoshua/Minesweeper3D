@@ -94,8 +94,8 @@ public class Board {
         for (int i = 0; i < this.length; i++) {
             for (int j = 0; j < this.width; j++) {
                 for (int k = 0; k < this.height; k++) {
-                    System.out.print(board[i][j][k] + " ");
-                    //System.out.print(board[i][j][k].getState() + " ");
+                    //System.out.print(board[i][j][k] + " ");
+                    System.out.print(board[i][j][k].getState() + " ");
                     //System.out.println(Arrays.deepToString(board));
                 }
                 System.out.println();
@@ -182,6 +182,7 @@ public class Board {
                     if (board[i][j][k].getMine() != true) {
                         board[i][j][k].setState(generatePointValue(i, j, k));
                     }
+
                 }
             }
         }
@@ -198,7 +199,7 @@ public class Board {
     }
 
     public void explode() {
-        //to be implemented later
+
     }
 
     /**
@@ -242,7 +243,7 @@ public class Board {
             board[length][width][height].setClickable(false); //sets Clickable for that specific cell to false
 
             if (adjacentMines(length, width, height) == false && board[length][width][height].getMine() == false) {
-                spreadToAdjacent(length, width, height); //calls on spreadtoAdjacent() if no mines are nearby
+                spreadToAdjacent(length, width, height); //calls on spreadToAdjacent() if no mines are nearby
             }
         }
     }
@@ -265,6 +266,26 @@ public class Board {
             }
         }
     }
+
+
+    public void spread2(int l, int w, int h){
+        if(board[l][w][h].getState() != 0){
+            //under development
+        }
+    }
+
+    /**
+     * Getter method to return a single cell
+     * @param length
+     * @param width
+     * @param height
+     * @return a specific cell
+     */
+    public Cell getCell(int length, int width, int height){
+        return board[length][width][height];
+    }
+
 }
+
 
 
