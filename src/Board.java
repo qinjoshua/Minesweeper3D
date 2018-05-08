@@ -12,6 +12,7 @@ public class Board {
     private int length;
     private int height;
     private int numMines;
+    private boolean firstClick = true;
     //private String[][][] dimensions;
     //private boolean[][][] hasMine;
     private Cell[][][] board;
@@ -60,9 +61,12 @@ public class Board {
 
             if (board[x][y][z].getMine() == false) {
                 Cell mine = new MineCell(-1, true);
-                board[x][y][z] = mine;
-                placed++;
+                if(x!=0 || y!= 0 || z!=0) {
+                    board[x][y][z] = mine;
+                    placed++;
+                }
             }
+
         }
     }
 
@@ -271,6 +275,27 @@ public class Board {
     public void spread2(int l, int w, int h){
         if(board[l][w][h].getState() != 0){
             //under development
+        }
+    }
+
+    public boolean onClick(int l, int w , int h){
+        if(board[l][w][h].getMine()==true){
+            if(firstClick){
+                //code to change the mine to the top left hand corner
+                board[l][w][h] = new SafeCell(0, false);
+                board[0][0][0] = new MineCell(-1, true);
+                changeValues();
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            if(board[l][w][h].getState() == 0){
+                spread(l, w, h);
+            }
+            return true;
         }
     }
 
