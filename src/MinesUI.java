@@ -11,6 +11,9 @@ import java.awt.Polygon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
@@ -18,35 +21,41 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import java.awt.Component;
 import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 import java.awt.Dimension;
 import javax.swing.JToolBar;
 import java.awt.event.MouseAdapter;
 import javax.swing.JCheckBoxMenuItem;
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import javax.swing.JRadioButtonMenuItem;
 
-public class MinesUI extends Board implements MouseListener{
+public class MinesUI extends Board implements MouseListener {
 
+	private Board board;
 	private int cells;
 	private JFrame frame;
 	private Polygon land[][][];
 	private boolean occupied[][][];
+	private JPanel flags[][][];
 	private JPanel panel;
 	private JPanel panelList[][][];
-	private Color color=Color.BLACK;
-	private Graphics graphics;
+	private JLabel explode;
+	private boolean endGame;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MinesUI window = new MinesUI(3);
+					MinesUI window = new MinesUI();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -58,86 +67,83 @@ public class MinesUI extends Board implements MouseListener{
 	/**
 	 * Create the application.
 	 */
-	public MinesUI(int cell) {
+	public MinesUI() {
 		frame = new JFrame();
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		
+
 		JMenu mnGame = new JMenu("Game");
 		menuBar.add(mnGame);
-		
+
 		JMenuItem mntmEasy = new JMenuItem("Easy");
 		mntmEasy.addActionListener(new java.awt.event.ActionListener() {
-		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    	clearBoard();
-		        initialize(3);
-		    }
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				clearBoard();
+				initialize(3, 310);
+			}
 		});
 		mnGame.add(mntmEasy);
-		
+
 		JMenuItem mntmMedium = new JMenuItem("Medium");
 		mntmMedium.addActionListener(new java.awt.event.ActionListener() {
-		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    	clearBoard();
-		        initialize(4);
-		    }
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				clearBoard();
+				initialize(4, 490);
+			}
 		});
 		mnGame.add(mntmMedium);
-		
+
 		JMenuItem mntmHard = new JMenuItem("Hard");
 		mntmHard.addActionListener(new java.awt.event.ActionListener() {
-		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    	clearBoard();
-		    }
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				clearBoard();
+				initialize(5, 720);
+			}
 		});
 		mnGame.add(mntmHard);
-		
-		JMenuItem mntmCustom = new JMenuItem("Custom");
-		mntmCustom.addActionListener(new java.awt.event.ActionListener() {
-		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    	//Promts user for cell size (always squared)
-		    	//initialize(c);
-		    }
-		});
-		mnGame.add(mntmCustom);
-		
-		JMenu mnOptions = new JMenu("Options");
-		menuBar.add(mnOptions);
-		
+
+		// Bonus. May remove.//
+		//JMenu mnOptions = new JMenu("Options");
+		//menuBar.add(mnOptions);
+
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
-		
+
 		JMenuItem mntmRules = new JMenuItem("Rules");
 		mntmRules.addActionListener(new java.awt.event.ActionListener() {
-		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    	new Help().setVisible(true);
-		    }
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				new Help().setVisible(true);
+			}
 		});
 		mnHelp.add(mntmRules);
-		
-		initialize(cell);
+
+		initialize(3, 310);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(int c) {
-		cells=c;
-		Board b=new Board(cells,cells,cells,cells*2);
-		b.createBoard();;
-		frame.setBounds(cells*20, cells*20, cells*85, cells*125); //Save: cells*85, cells*35
-		land=new Polygon[cells][cells][cells];
-		occupied=new boolean[cells][cells][cells];
-		panelList=new JPanel[cells][cells][cells];
-		
-		panel=new JPanel(){
-			public void paintComponent(Graphics g){
-				graphics=g;
-				for(int i=0;i<cells;i++){
-					for(int j=0;j<cells;j++){
-						for(int k=0;k<cells;k++){
-							land[i][j][k]=drawCell(g,(30*cells)+(k*50)-(j*25),(j*25)+(i*25*cells)+10);
+	private void initialize(int c, int length) {
+		cells = c;
+		endGame = false;
+		board = new Board(cells, cells, cells, cells * 2);
+		frame.setBounds(cells * 20, cells * 20, cells * 55, length); // Save:
+																		// cells*85,
+																		// cells*105
+
+		land = new Polygon[cells][cells][cells];
+		occupied = new boolean[cells][cells][cells];
+		panelList = new JPanel[cells][cells][cells];
+		flags = new JPanel[cells][cells][cells];
+
+		panel = new JPanel() {
+			public void paintComponent(Graphics g) {
+				for (int i = 0; i < cells; i++) {
+					for (int j = 0; j < cells; j++) {
+						for (int k = 0; k < cells; k++) {
+							land[i][j][k] = drawCell(g, (20 * cells) + (k * 25) - (j * 12),
+									(j * 25) + (i * 25 * cells) + (i * 5) + 5);
 						}
 					}
 				}
@@ -146,99 +152,143 @@ public class MinesUI extends Board implements MouseListener{
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(e.getModifiers()==MouseEvent.BUTTON1_MASK){
-					System.out.println(e.getX()+" "+e.getY());
-					for(int i=0;i<cells;i++){
-						for(int j=0;j<cells;j++){
-							for(int k=0;k<cells;k++){
-								System.out.println(occupied[i][j][k]);
-								if(land[i][j][k].contains(e.getX(),e.getY())&&occupied[i][j][k]!=true){
-									Polygon p=land[i][j][k];
-									if(b.getBoard()[i][j][k]!=new MineCell(-1, true)){
-										int x=i,y=j,z=k;
-										panel=new JPanel(){
-											public void paintComponent(Graphics g){
-												g.drawString(String.valueOf(b.generatePointValue(x, y, z)), p.xpoints[0]+12,p.ypoints[0]+13);
-												//Test t =new Test(p.xpoints[0],p.ypoints[0]);
-												//t.paintComponent(g);
+				if (endGame == false) {
+					for (int i = 0; i < cells; i++) {
+						for (int j = 0; j < cells; j++) {
+							for (int k = 0; k < cells; k++) {
+								if (land[i][j][k].contains(e.getX(), e.getY())) {
+									Polygon p = land[i][j][k];
+									int x = i, y = j, z = k;
+									if (e.getModifiers() == MouseEvent.BUTTON1_MASK && occupied[i][j][k] == false) {
+										if (board.getBoard()[i][j][k].getMine() == false) {
+											panel = new JPanel() {
+												public void paintComponent(Graphics g) {
+													int num = board.generatePointValue(x, y, z);
+													try {
+														BufferedImage image;
+														image = ImageIO
+																.read(new File("graphics\\numbers\\" + num + ".png"));
+														g.drawImage(image, p.xpoints[0], p.ypoints[0], this);
+													} catch (IOException h) {
+														System.out.println("GUI Numbers Error");
+													}
+												}
+											};
+											occupied[i][j][k] = true;
+											panelList[i][j][k] = panel;
+										} else {
+											panel=showMines(land[i][j][k]);
+											endGame = true;
+											
+											occupied[i][j][k]=true;
+											panelList[i][j][k] = panel;
+											explode(p);
+										}
+									} else if (e.getModifiers() == MouseEvent.BUTTON3_MASK && occupied[i][j][k] == false
+											&& flags[i][j][k] == null) {
+										panel = new JPanel() {
+											public void paintComponent(Graphics g) {
+												try {
+													BufferedImage image;
+													image = ImageIO.read(new File("graphics\\flag.png"));
+													g.drawImage(image, p.xpoints[0], p.ypoints[0], this);
+												} catch (IOException h) {
+													System.out.println("GUI Flag Error");
+												}
 											}
 										};
-									}else{b.explode();}
-									occupied[i][j][k]=true;
-									panelList[i][j][k]=panel;
-								}else if(e.getModifiers()==MouseEvent.BUTTON3_MASK){
-									//Right click action
+										panelList[i][j][k] = panel;
+										flags[i][j][k] = panel;
+										occupied[i][j][k] = true;
+									} else if (e.getModifiers() == MouseEvent.BUTTON3_MASK && occupied[i][j][k] == true
+											&& flags[i][j][k] != null) {
+										frame.remove(panelList[i][j][k]);
+										panelList[i][j][k] = null;
+										flags[i][j][k] = null;
+										occupied[i][j][k] = false;
+									}
 								}
 							}
 						}
 					}
+					frame.getContentPane().add(panel);
+					frame.repaint();
+					frame.revalidate();
 				}
-				frame.getContentPane().add(panel);
-				frame.repaint();
-				frame.revalidate();
 			}
 		});
 		frame.addMouseListener(this);
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 	}
-	private Polygon drawCell(Graphics g, int x, int y){
-	    int[] xCords={x,x+50,x+25,x-25};
-	    int[] yCords={y,y,y+25,y+25};
-	    Polygon p=new Polygon(xCords,yCords,4);
-	    g.drawPolygon(p);
-	    return p;
+
+	private Polygon drawCell(Graphics g, int x, int y) {
+		int[] xCords = { x, x + 25, x + 12, x - 12 };
+		int[] yCords = { y, y, y + 25, y + 25 };
+		Polygon p = new Polygon(xCords, yCords, 4);
+		g.drawPolygon(p);
+		return p;
 	}
-	public void clearBoard(){
-		for(int i=0;i<cells;i++){
-			for(int j=0;j<cells;j++){
-				for(int k=0;k<cells;k++){
-					if(occupied[i][j][k]==true){
+
+	private JPanel showMines(Polygon p) {
+		JPanel mines = new JPanel() {
+			public void paintComponent(Graphics g) {
+				for(int i=0;i<cells;i++){
+					for(int j=0;j<cells;j++){
+						for(int k=0;k<cells;k++){
+							if(board.getBoard()[i][j][k].getMine()==true){
+								Polygon l=land[i][j][k];
+								try {
+									BufferedImage image = ImageIO.read(new File("graphics\\mine.png"));
+									g.drawImage(image, l.xpoints[0], l.ypoints[0], this);
+								} catch (IOException h) {
+									System.out.println("GUI Mine Error");
+								}
+							}
+						}
+					}
+				}
+			}
+		};
+		return mines;
+
+	}
+
+	public void clearBoard() {
+		board = null;
+		for (int i = 0; i < cells; i++) {
+			for (int j = 0; j < cells; j++) {
+				for (int k = 0; k < cells; k++) {
+					if (occupied[i][j][k] == true) {
 						frame.remove(panelList[i][j][k]);
 					}
 				}
 			}
 		}
+		frame.remove(explode);
 	}
-	public void setCells(int c){
-		cells=c;
+	public void explode(Polygon p){
+		try{
+			Icon gif = new ImageIcon("graphics\\explode.gif");
+			JLabel explode=new JLabel(gif);
+			explode.setBounds(p.xpoints[0], p.ypoints[0], 21, 21);
+			frame.getContentPane().add(explode);
+			this.explode=explode;
+		}catch(Exception e){System.out.println("GUI Explode Error");}
 	}
-	/**
-	 * 
-	 * @param c -color to be changed
-	 */
-	public void setColor(Color c){
-		color=c;
-	}
-
-	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
-	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
-	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
-	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
-	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }
