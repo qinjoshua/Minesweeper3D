@@ -202,7 +202,10 @@ public class MinesUI extends Board implements MouseListener {
 										occupied[i][j][k] = true;
 									} else if (e.getModifiers() == MouseEvent.BUTTON3_MASK && occupied[i][j][k] == true
 											&& flags[i][j][k] != null) {
+										
+										panelList[i][j][k].setVisible(false);
 										frame.remove(panelList[i][j][k]);
+										
 										panelList[i][j][k] = null;
 										flags[i][j][k] = null;
 										occupied[i][j][k] = false;
@@ -266,7 +269,9 @@ public class MinesUI extends Board implements MouseListener {
 				}
 			}
 		}
-		frame.remove(explode);
+		if(explode!=null){	
+			frame.remove(explode);
+		}
 	}
 	public void explode(Polygon p){
 		try{
