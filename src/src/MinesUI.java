@@ -21,6 +21,9 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import java.awt.Component;
 import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 import java.awt.Dimension;
 import javax.swing.JToolBar;
 import java.awt.event.MouseAdapter;
@@ -41,6 +44,7 @@ public class MinesUI extends Board implements MouseListener {
 	private JPanel flags[][][];
 	private JPanel panel;
 	private JPanel panelList[][][];
+	private JLabel explode;
 	private boolean endGame;
 
 	/**
@@ -100,9 +104,8 @@ public class MinesUI extends Board implements MouseListener {
 		mnGame.add(mntmHard);
 
 		// Bonus. May remove.//
-		JMenu mnOptions = new JMenu("Options");
-		menuBar.add(mnOptions);
-		// ---------------//
+		//JMenu mnOptions = new JMenu("Options");
+		//menuBar.add(mnOptions);
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -174,33 +177,12 @@ public class MinesUI extends Board implements MouseListener {
 											occupied[i][j][k] = true;
 											panelList[i][j][k] = panel;
 										} else {
-											// b.explode();
+											panel=showMines(land[i][j][k]);
+											endGame = true;
 											
-											for (int a = 0; a < cells; a++) {
-												for (int b = 0; b < cells; b++) {
-													for (int c = 0; c < cells; c++) {
-														if (board.getBoard()[a][b][c].getMine() == true){
-															panel = new JPanel() {
-																public void paintComponent(Graphics g) {
-																	try {
-																		BufferedImage image = ImageIO
-																				.read(new File("graphics\\mine.png"));
-																		g.drawImage(image, p.xpoints[0], p.ypoints[0], this);
-																	
-																	} catch (IOException h) {
-																		System.out.println("GUI Mine Error");
-																	}
-																}
-															};
-															panelList[a][b][c]=panel;
-															frame.getContentPane().add(panel);
-															frame.repaint();
-															frame.revalidate();
-														}
-													}
-												}
-											}
-											// endGame=true;
+											occupied[i][j][k]=true;
+											panelList[i][j][k] = panel;
+											explode(p);
 										}
 									} else if (e.getModifiers() == MouseEvent.BUTTON3_MASK && occupied[i][j][k] == false
 											&& flags[i][j][k] == null) {
@@ -210,22 +192,20 @@ public class MinesUI extends Board implements MouseListener {
 													BufferedImage image;
 													image = ImageIO.read(new File("graphics\\flag.png"));
 													g.drawImage(image, p.xpoints[0], p.ypoints[0], this);
-													
 												} catch (IOException h) {
 													System.out.println("GUI Flag Error");
 												}
 											}
 										};
-										panelList[i][j][k]=panel;
-										flags[i][j][k]=panel;
-										occupied[i][j][k]=true;
-									}else if (e.getModifiers() == MouseEvent.BUTTON3_MASK && occupied[i][j][k] == true
+										panelList[i][j][k] = panel;
+										flags[i][j][k] = panel;
+										occupied[i][j][k] = true;
+									} else if (e.getModifiers() == MouseEvent.BUTTON3_MASK && occupied[i][j][k] == true
 											&& flags[i][j][k] != null) {
 										frame.remove(panelList[i][j][k]);
-										panelList[i][j][k]=null;
-										flags[i][j][k]=null;
-										occupied[i][j][k]=false;
-										System.out.println("check");
+										panelList[i][j][k] = null;
+										flags[i][j][k] = null;
+										occupied[i][j][k] = false;
 									}
 								}
 							}
@@ -251,19 +231,52 @@ public class MinesUI extends Board implements MouseListener {
 		return p;
 	}
 
-	public void clearBoard(){
-		board=null;
-		for(int i=0;i<cells;i++){
-			for(int j=0;j<cells;j++){
-				for(int k=0;k<cells;k++){
-					if(occupied[i][j][k]==true){
+	private JPanel showMines(Polygon p) {
+		JPanel mines = new JPanel() {
+			public void paintComponent(Graphics g) {
+				for(int i=0;i<cells;i++){
+					for(int j=0;j<cells;j++){
+						for(int k=0;k<cells;k++){
+							if(board.getBoard()[i][j][k].getMine()==true){
+								Polygon l=land[i][j][k];
+								try {
+									BufferedImage image = ImageIO.read(new File("graphics\\mine.png"));
+									g.drawImage(image, l.xpoints[0], l.ypoints[0], this);
+								} catch (IOException h) {
+									System.out.println("GUI Mine Error");
+								}
+							}
+						}
+					}
+				}
+			}
+		};
+		return mines;
+
+	}
+
+	public void clearBoard() {
+		board = null;
+		for (int i = 0; i < cells; i++) {
+			for (int j = 0; j < cells; j++) {
+				for (int k = 0; k < cells; k++) {
+					if (occupied[i][j][k] == true) {
 						frame.remove(panelList[i][j][k]);
 					}
 				}
 			}
 		}
+		frame.remove(explode);
 	}
-
+	public void explode(Polygon p){
+		try{
+			Icon gif = new ImageIcon("graphics\\explode.gif");
+			JLabel explode=new JLabel(gif);
+			explode.setBounds(p.xpoints[0], p.ypoints[0], 21, 21);
+			frame.getContentPane().add(explode);
+			this.explode=explode;
+		}catch(Exception e){System.out.println("GUI Explode Error");}
+	}
 	public void mouseClicked(MouseEvent arg0) {
 	}
 
