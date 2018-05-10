@@ -278,6 +278,23 @@ public class Board {
         }
     }
 
+    public boolean winCheck() {
+    	for(int x = 0; x < board.length; x++)
+    	{
+    		for(int y = 0; y < board[x].length; y++)
+    		{
+    			for(int z = 0; z < board[x][y].length; z++)
+    			{
+    				if(board[x][y][z].getMine() == false && board[x][y][z].getFlipped() == false)
+    				{
+    					return false;
+    				}
+    			}
+    		}
+    	}
+    	return true;
+    }
+    
     public boolean onClick(int l, int w , int h){
         if(board[l][w][h].getMine()==true){
             if(firstClick){
@@ -294,6 +311,11 @@ public class Board {
         else{
             if(board[l][w][h].getState() == 0){
                 spread(l, w, h);
+                
+            }
+            else
+            {
+            	
             }
             return true;
         }

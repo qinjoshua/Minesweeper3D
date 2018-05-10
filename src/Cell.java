@@ -8,7 +8,8 @@ public abstract class Cell {
 	private boolean clickable;
 	private int state;
 	private boolean mine;
-
+	private boolean flipped;
+	
 	/**
 	 * Constructor that initializes state, mine, and clickable
 	 * 
@@ -21,6 +22,7 @@ public abstract class Cell {
 		state = s;
 		mine = m;
 		clickable = true;
+		flipped = false;
 	}
 
 	/**
@@ -28,6 +30,11 @@ public abstract class Cell {
 	 */
 	public void flagged() {
 		clickable = false;
+	}
+	
+	public boolean getFlipped()
+	{
+		return flipped;
 	}
 
 	/**

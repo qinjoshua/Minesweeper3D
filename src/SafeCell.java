@@ -1,3 +1,5 @@
+import java.awt.Graphics;
+
 /**
  * Extends cell, represents a safecell
  * 
@@ -5,6 +7,8 @@
  *
  */
 public class SafeCell extends Cell {
+	
+	
 	/**
 	 * Constructor that calls on super
 	 * 
@@ -16,14 +20,15 @@ public class SafeCell extends Cell {
 	public SafeCell(int s, boolean m) {
 		super(s, m);
 	}
-
+	
 	/**
 	 * onClick - Displays the number of miens around it, returns the number of mines
 	 * around
 	 */
 	public int onClick() {
 		int mineCount = 0;
-		// too be implemented later
+		
+		
 		return mineCount;
 	}
 
