@@ -36,49 +36,27 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JButton;
 
 public class MinesUI extends Board implements MouseListener {
-	/**
-	 * Variable of Board class
-	 */
+	/** Variable of Board class*/
 	private Board board;
-	/**
-	 * Length, Width, and Height of board
-	 */
+	/** Length, Width, and Height of board*/
 	private int cells;
-	/**
-	 * JFrame of GUI
-	 */
+	/** JFrame of GUI*/
 	private JFrame frame;
-	/**
-	 * Saves each individual cell/rectangle
-	 */
+	/** Saves each individual cell/rectangle*/
 	private Polygon land[][][];
-	/**
-	 * Checks if cell is occupied with an image(#,flag,?)
-	 */
+	/** Checks if cell is occupied with an image(#,flag,?)*/
 	private boolean occupied[][][];
-	/**
-	 * Saves cells occupied with a flag
-	 */
+	/** Saves cells occupied with a flag*/
 	private JPanel flags[][][];
-	/**
-	 * Saves cells occupied with a question mark
-	 */
+	/** Saves cells occupied with a question mark*/
 	private JPanel question[][][];
-	/**
-	 * JPanel to be added to frame
-	 */
+	/** JPanel to be added to frame*/
 	private JPanel panel;
-	/**
-	 * List of all the panels placed onto frame (for deletion/reset purposes)
-	 */
+	/** List of all the panels placed onto frame (for deletion/reset purposes)*/
 	private JPanel panelList[][][];
-	/**
-	 * Saves explosion panel (for deletion/reset purposes)
-	 */
+	/** Saves explosion panel (for deletion/reset purposes)*/
 	private JLabel explode;
-	/**
-	 * Stops clicks from having an effect on the game after it's over
-	 */
+	/** Stops clicks from having an effect on the game after it's over*/
 	private boolean endGame;
 
 	/**
@@ -221,7 +199,7 @@ public class MinesUI extends Board implements MouseListener {
 							if (board.getBoard()[i][j][k].getMine() == true) {
 								Polygon l = land[i][j][k];
 								try {
-									BufferedImage image = ImageIO.read(new File("graphics\\mine.png"));
+									BufferedImage image = ImageIO.read(new File("graphics//mine.png"));
 									g.drawImage(image, l.xpoints[0], l.ypoints[0], this);
 								} catch (IOException h) {
 									System.out.println("GUI Mine Error");
@@ -281,7 +259,7 @@ public class MinesUI extends Board implements MouseListener {
 	 */
 	public void explode(Polygon p) {
 		try {
-			Icon gif = new ImageIcon("graphics\\explode.gif");
+			Icon gif = new ImageIcon("graphics//explode.gif");
 			JLabel explode = new JLabel(gif);
 			explode.setBounds(p.xpoints[0], p.ypoints[0], 21, 21);
 			frame.getContentPane().add(explode);
@@ -343,14 +321,14 @@ public class MinesUI extends Board implements MouseListener {
 	 * @param i,j,k
 	 *            -Coordinates of cell
 	 */
-	private void placeNumber(int i, int j, int k) {
-		int num = board.generatePointValue(i, j, k);
+	private void placeNumber(final int i,final int j,final int k) {
+		final int num = board.generatePointValue(i, j, k);
 		if (num != 0) {
 			panel = new JPanel() {
 				public void paintComponent(Graphics g) {
 					try {
 						BufferedImage image;
-						image = ImageIO.read(new File("graphics\\numbers\\" + num + ".png"));
+						image = ImageIO.read(new File("graphics//numbers//" + num + ".png"));
 						g.drawImage(image, land[i][j][k].xpoints[0], land[i][j][k].ypoints[0], this);
 					} catch (IOException h) {
 						System.out.println(h.getMessage() + " " + num);
@@ -368,12 +346,12 @@ public class MinesUI extends Board implements MouseListener {
 	 * @param i,j,k
 	 *            -Coordinates of cell
 	 */
-	private void placeFlag(int i, int j, int k) {
+	private void placeFlag(final int i, final int j, final int k) {
 		panel = new JPanel() {
 			public void paintComponent(Graphics g) {
 				try {
 					BufferedImage image;
-					image = ImageIO.read(new File("graphics\\flag.png"));
+					image = ImageIO.read(new File("graphics//flag.png"));
 					g.drawImage(image, land[i][j][k].xpoints[0], land[i][j][k].ypoints[0], this);
 				} catch (IOException h) {
 					System.out.println("GUI Flag Error");
@@ -391,14 +369,14 @@ public class MinesUI extends Board implements MouseListener {
 	 * @param i,j,k
 	 *            -Coordinates of cell
 	 */
-	private void placeQuestion(int i, int j, int k) {
+	private void placeQuestion(final int i, final int j, final int k) {
 		panelList[i][j][k].setVisible(false);
 		frame.remove(panelList[i][j][k]);
 		panel = new JPanel() {
 			public void paintComponent(Graphics g) {
 				try {
 					BufferedImage image;
-					image = ImageIO.read(new File("graphics\\question.png"));
+					image = ImageIO.read(new File("graphics//question.png"));
 					g.drawImage(image, land[i][j][k].xpoints[0], land[i][j][k].ypoints[0], this);
 				} catch (IOException h) {
 					System.out.println("GUI Question Error");

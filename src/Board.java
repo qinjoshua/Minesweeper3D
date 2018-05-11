@@ -8,13 +8,17 @@ import java.util.Random;
  */
 public class Board {
 
+    /**Integer for the width of the board (y)*/
     private int width;
+    /**Integer for the length of board (x)*/
     private int length;
+    /** Integer for the height of the board (z)*/
     private int height;
+    /**Integer for the number of mines to be placed on the board*/
     private int numMines;
+    /** Boolean value that is true if onClick() is called for the first time, false otherwise*/
     private boolean firstClick = true;
-    //private String[][][] dimensions;
-    //private boolean[][][] hasMine;
+    /** Array of cells containing the board the game is played on*/
     private Cell[][][] board;
 
     /**
@@ -49,6 +53,7 @@ public class Board {
 
     /**
      * Randomly places a numMines number of mines on the board
+     * board[0][0][0] is kept as a safeCell to ensure the user doesn't click on a mine on the first click
      */
     public void scramble() {
         int placed = 0;
@@ -94,13 +99,15 @@ public class Board {
 
     }
 
+    /**
+     * Test method used to print out the board.
+     * Only for debugging purposes, not used in the actual program
+     */
     public void printBoard() {
         for (int i = 0; i < this.length; i++) {
             for (int j = 0; j < this.width; j++) {
                 for (int k = 0; k < this.height; k++) {
-                    //System.out.print(board[i][j][k] + " ");
-                    System.out.print(board[i][j][k].getState() + " ");
-                    //System.out.println(Arrays.deepToString(board));
+                    System.out.print(board[i][j][k] + " ");
                 }
                 System.out.println();
             }
@@ -294,7 +301,16 @@ public class Board {
     	}
     	return true;
     }
-    
+
+    /**
+     * OnClick Method that is called whenever the user clicks on a cell
+     * @param l length of cell
+     * @param w width of cell
+     * @param h height of cell
+     * @return
+     *      true if a mine is clicked
+     *      false otherwise
+     */
     public boolean onClick(int l, int w , int h){
         if(board[l][w][h].getMine()==true){
             if(firstClick){
