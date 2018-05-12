@@ -117,17 +117,6 @@ public class MinesUI implements MouseListener {
 		});
 		mnGame.add(mntmHard);
 
-		JMenu mnHelp = new JMenu("Help");
-		menuBar.add(mnHelp);
-
-		JMenuItem mntmRules = new JMenuItem("Rules");
-		mntmRules.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				new Help().setVisible(true);
-			}
-		});
-		mnHelp.add(mntmRules);
-
 		JButton btnReset = new JButton("Reset");
 		btnReset.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,6 +124,14 @@ public class MinesUI implements MouseListener {
 			}
 		});
 		menuBar.add(btnReset);
+		
+		JMenuItem mnHelp = new JMenuItem("Help");
+		mnHelp.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				new Help().setVisible(true);
+			}
+		});
+		menuBar.add(mnHelp);
 		
 		initialize(3, 310);
 	}
@@ -148,7 +145,7 @@ public class MinesUI implements MouseListener {
 	private void initialize(int c, int length) {
 		cells = c;
 		endGame = false;
-		board = new Board(cells, cells, cells, cells*2);
+		board = new Board(cells, cells, cells, cells*(cells-1));
 		frame.setBounds(100, 5, cells * 55 + 68, length);
 		land = new Polygon[cells][cells][cells];
 		occupied = new boolean[cells][cells][cells];
@@ -459,7 +456,7 @@ public class MinesUI implements MouseListener {
 			public void paintComponent(Graphics g){
 				g.drawString("You've lost!", land[0][0][cells-1].xpoints[1], land[0][0][cells-1].ypoints[2]+12);
 			}
-		};
+		     	};
 		frame.add(text);
 		frame.repaint();
 		frame.revalidate();

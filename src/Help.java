@@ -36,35 +36,19 @@ public class Help extends JDialog {
 	 * Create the dialog.
 	 */
 	public Help() {
-		setBounds(0, 0, 900, 500);
+		setBounds(0, 0, 500, 500);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
-			//Displays instructions from Rules.txt
-			//Rules is currently located in /main/ but will be moved to /docs/
 			try{
 				Scanner read = new Scanner(new File("Rules.txt")); //Copied for testing, can change
 				String text="";
 				int bound=0;
 				int counter = 0;
 				while(read.hasNext()){
-					String s=read.next();
-					bound+=s.length();
-					if(s.indexOf('.')!=-1){s+="\n";bound=0;}
-					if(s.indexOf(':')!=-1){s+="\n\n";bound=0;}
-					if(bound<125){
-					
-						text+= " " + s;
-
-					}
-					else{
-					
-						text+="\n"+s+" ";
-						bound=0;
-						
-					}
+					text+=read.nextLine()+"\n";
 				}
 				JTextArea textArea=new JTextArea(10,20);
 				JScrollPane scrollPane = new JScrollPane(textArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
