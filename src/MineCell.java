@@ -1,8 +1,5 @@
-/**
- * Extends Cell, represents a mine cell
- * 
- * @author Nam
- *
+/**MineCell class that represents a cell with a mine in it
+ * Extends cell, and is used in the board[][][] array in the Board Class
  */
 public class MineCell extends Cell {
 	/**
@@ -18,8 +15,8 @@ public class MineCell extends Cell {
 	}
 
 	/**
-	 * onClick - Explodes and return -1
-	 * 
+	 * onClick method is called upon a user click
+	 * The state is set to -1 as there clicking on a minecell ends the game
 	 * @return - returns -1
 	 */
 	public int onClick() {
@@ -29,8 +26,9 @@ public class MineCell extends Cell {
 
 	/**
 	 * explode - Displays explode animation
+	 * Moved to the MinesUI class
 	 */
 	public void explode() {
-		// too be implemented later
+		//explode() has been moved to the MinesUI class
 	}
 }

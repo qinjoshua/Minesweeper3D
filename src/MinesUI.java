@@ -61,6 +61,7 @@ public class MinesUI extends Board implements MouseListener {
 
 	/**
 	 * Launches the application.
+	 * This is the main class in the .jar file
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -77,6 +78,7 @@ public class MinesUI extends Board implements MouseListener {
 
 	/**
 	 * Initializes the frame and the menu bar
+	 * The menu bar contains the difficulty options
 	 */
 	public MinesUI() {
 		frame = new JFrame();
@@ -135,7 +137,6 @@ public class MinesUI extends Board implements MouseListener {
 
 	/**
 	 * Initialize variables and board, then adds panel onto frame. Also calls
-	 * clickAlgorithm.
 	 */
 	private void initialize(int c, int length) {
 		cells = c;
@@ -420,20 +421,32 @@ public class MinesUI extends Board implements MouseListener {
 	}
 
 	/**
-	 * Ignore. Required my implementation.
+	 * This method is unused
 	 */
 	public void mouseClicked(MouseEvent arg0) {
 	}
 
+	/**
+	 * This method is unused
+	 */
 	public void mouseEntered(MouseEvent e) {
 	}
 
+	/**
+	 * This method is unused
+	 */
 	public void mouseExited(MouseEvent e) {
 	}
 
+	/**
+	 * This method is unused
+	 */
 	public void mousePressed(MouseEvent e) {
 	}
 
+	/**
+	 * This method is unused
+	 * */
 	public void mouseReleased(MouseEvent e) {
 	}
 }

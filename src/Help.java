@@ -14,7 +14,9 @@ import javax.swing.JTextArea;
 
 public class Help extends JDialog {
 
+	/**Creates a new Panel*/
 	private final JPanel contentPanel = new JPanel();
+	/**Creates a new Scroll Panel*/
 	private final JScrollPane scrollPane = new JScrollPane();
 
 	/**
@@ -40,8 +42,10 @@ public class Help extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
-			//Still needs work
-			try{Scanner read = new Scanner(new File("Rules.txt"));//Copied for testing, can change
+			//Displays instructions from Rules.txt
+			//Rules is currently located in /main/ but will be moved to /docs/
+			try{
+				Scanner read = new Scanner(new File("Rules.txt")); //Copied for testing, can change
 				String text="";
 				int bound=0;
 				int counter = 0;
@@ -54,7 +58,8 @@ public class Help extends JDialog {
 					
 						text+= " " + s;
 
-					}else{
+					}
+					else{
 					
 						text+="\n"+s+" ";
 						bound=0;
