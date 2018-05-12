@@ -90,21 +90,7 @@ public class Leaderboard {
 		}
 	}
 
-	/**
-	 * A method that is to only used by Quicksort for sorting purposes
-	 * 
-	 * @param list
-	 *            - takes in the list that needs to be changed
-	 * @param g
-	 *            - takes in the first thing that needs to be swapped with h
-	 * @param h
-	 *            - the second object that is taken in to swap with g
-	 */
-	private void swap(ArrayList<Player> list, int g, int h) {
-		Player temp = list.get(g);
-		list.set(g, list.get(h));
-		list.set(h, temp);
-	}
+
 
 	/**
 	 * Returns an arraylist of the top x amount of players
