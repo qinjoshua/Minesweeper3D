@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JButton;
+import javax.swing.JTextPane;
 
 public class MinesUI extends Board implements MouseListener {
 	/** Variable of Board class*/
@@ -58,6 +59,8 @@ public class MinesUI extends Board implements MouseListener {
 	private JLabel explode;
 	/** Stops clicks from having an effect on the game after it's over*/
 	private boolean endGame;
+	/** Text for winning the game */
+	private JTextPane winText;
 
 	/**
 	 * Launches the application.
@@ -131,26 +134,28 @@ public class MinesUI extends Board implements MouseListener {
 			}
 		});
 		menuBar.add(btnReset);
-
+		
+		winText = new JTextPane();
+		winText.setEditable(false);
+		winText.setText("You've won!");
 		initialize(3, 310);
 	}
 
 	/**
 	 * Initialize variables and board, then adds panel onto frame. Also calls
+	 * clickAlgorithm.
 	 */
 	private void initialize(int c, int length) {
 		cells = c;
 		endGame = false;
-		board = new Board(cells, cells, cells, cells * 2);
-		frame.setBounds(cells * 20, cells * 20, cells * 55, length); // Save:
-																		// cells
-																		// * 55
+		board = new Board(cells, cells, cells, cells*2);
+		frame.setBounds(cells * 20, cells * 20, cells * 55 + 60, length);
 		land = new Polygon[cells][cells][cells];
 		occupied = new boolean[cells][cells][cells];
 		panelList = new JPanel[cells][cells][cells];
 		flags = new JPanel[cells][cells][cells];
 		question = new JPanel[cells][cells][cells];
-		panel = new JPanel() {
+		panel=new JPanel() {
 			public void paintComponent(Graphics g) {
 				for (int i = 0; i < cells; i++) {
 					for (int j = 0; j < cells; j++) {
@@ -166,7 +171,7 @@ public class MinesUI extends Board implements MouseListener {
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-
+	
 	/**
 	 * Draws an individual cell at a certain point
 	 * 
@@ -213,6 +218,22 @@ public class MinesUI extends Board implements MouseListener {
 		};
 		return mines;
 	}
+	@Override
+	public boolean winCheck() {
+		int count=0;
+    	for(int x = 0; x < cells; x++){
+    		for(int y = 0; y < cells; y++){
+    			for(int z = 0; z < cells; z++){
+    				if(occupied[x][y][z] == false&&board.getBoard()[x][y][z].getMine() == false){
+    					count++;
+    				}
+    			}
+    		}
+    	}
+    	if(count==1){
+    		return true;
+    	}return false;
+    }
 
 	/**
 	 * Resets the board for a new game. Clears frame using panelList and
@@ -232,6 +253,9 @@ public class MinesUI extends Board implements MouseListener {
 		if (explode != null) {
 			frame.remove(explode);
 		}
+		try{
+			frame.remove(winText);
+		}catch(NullPointerException e){}
 		frame.repaint();
 	}
 
@@ -281,6 +305,13 @@ public class MinesUI extends Board implements MouseListener {
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if(winCheck()==true){
+					panel.add(winText);
+					frame.getContentPane().add(panel,BorderLayout.EAST);
+					frame.repaint();
+					frame.revalidate();
+					endGame=true;
+				}
 				if (endGame == false) {
 					for (int i = 0; i < cells; i++) {
 						for (int j = 0; j < cells; j++) {
@@ -322,21 +353,21 @@ public class MinesUI extends Board implements MouseListener {
 	 * @param i,j,k
 	 *            -Coordinates of cell
 	 */
-	private void placeNumber(final int i,final int j,final int k) {
+	private void placeNumber(final int i, final int j, final int k) {
 		final int num = board.generatePointValue(i, j, k);
-		if (num != 0) {
 			panel = new JPanel() {
 				public void paintComponent(Graphics g) {
-					try {
-						BufferedImage image;
-						image = ImageIO.read(new File("graphics//numbers//" + num + ".png"));
-						g.drawImage(image, land[i][j][k].xpoints[0], land[i][j][k].ypoints[0], this);
-					} catch (IOException h) {
-						System.out.println(h.getMessage() + " " + num);
-					}
+					if (num != 0) {
+						try {
+							BufferedImage image;
+							image = ImageIO.read(new File("graphics//numbers//" + num + ".png"));
+							g.drawImage(image, land[i][j][k].xpoints[0], land[i][j][k].ypoints[0], this);
+						} catch (IOException h) {
+							System.out.println(h.getMessage() + " " + num);
+						}
+					}else{g.drawString("0", land[i][j][k].xpoints[0]+8, land[i][j][k].ypoints[0]+12);}
 				}
 			};
-		}
 		occupied[i][j][k] = true;
 		panelList[i][j][k] = panel;
 	}
@@ -370,7 +401,7 @@ public class MinesUI extends Board implements MouseListener {
 	 * @param i,j,k
 	 *            -Coordinates of cell
 	 */
-	private void placeQuestion(final int i, final int j, final int k) {
+	private void placeQuestion(final int i, final int j,final int k) {
 		panelList[i][j][k].setVisible(false);
 		frame.remove(panelList[i][j][k]);
 		panel = new JPanel() {
@@ -425,7 +456,7 @@ public class MinesUI extends Board implements MouseListener {
 	 */
 	public void mouseClicked(MouseEvent arg0) {
 	}
-
+	
 	/**
 	 * This method is unused
 	 */
@@ -446,7 +477,7 @@ public class MinesUI extends Board implements MouseListener {
 
 	/**
 	 * This method is unused
-	 * */
+	 */
 	public void mouseReleased(MouseEvent e) {
 	}
 }
