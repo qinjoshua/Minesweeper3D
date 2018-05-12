@@ -285,28 +285,11 @@ public class Board {
         }
     }
 
-    public boolean winCheck() {
-    	for(int x = 0; x < board.length; x++)
-    	{
-    		for(int y = 0; y < board[x].length; y++)
-    		{
-    			for(int z = 0; z < board[x][y].length; z++)
-    			{
-    				if(board[x][y][z].getMine() == false && board[x][y][z].getFlipped() == false)
-    				{
-    					return false;
-    				}
-    			}
-    		}
-    	}
-    	return true;
-    }
-
     /**
      * OnClick Method that is called whenever the user clicks on a cell
-     * @param l length of cell
-     * @param w width of cell
-     * @param h height of cell
+     * @param l -length of cell
+     * @param w -width of cell
+     * @param h -height of cell
      * @return
      *      true if a mine is clicked
      *      false otherwise
@@ -339,15 +322,14 @@ public class Board {
 
     /**
      * Getter method to return a single cell
-     * @param length
-     * @param width
-     * @param height
+     * @param l -length of cell
+     * @param w -width of cell
+     * @param h -height of cell
      * @return a specific cell
      */
     public Cell getCell(int length, int width, int height){
         return board[length][width][height];
     }
-
 }
 
 

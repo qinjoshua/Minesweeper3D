@@ -11,7 +11,7 @@ import java.time.Month;
 public class Player {
 	private String name;
 	private int score;
-	private int time;
+	private String time;
 
 	/**
 	 * Constructor that initializes the player name and score
@@ -21,7 +21,7 @@ public class Player {
 	 * @param s
 	 *            - player score;
 	 */
-	public Player(String n, int s, int t) {
+	public Player(String n, int s, String t) {
 		name = n;
 		score = s;
 		time = t;
@@ -51,7 +51,7 @@ public class Player {
 	 * 
 	 * @return - returns the time
 	 */
-	public int getTime() {
+	public String getTime() {
 		return time;
 	}
 
