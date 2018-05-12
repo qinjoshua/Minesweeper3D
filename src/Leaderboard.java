@@ -48,26 +48,46 @@ public class Leaderboard {
 	 * @param last
 	 *            - takes in the last position
 	 */
-	private void quickSort(ArrayList<Player> list, int first, int last) {
-		int g = first, h = last;
-		int midIndex = (first + last) / 2;
-		Player dividingValue = list.get(midIndex);
-		do {
-			while (list.get(g).compareTo(dividingValue) < 0)
-				g++;
-			while (list.get(h).compareTo(dividingValue) > 0)
-				h--;
-			if (g <= h) {
-				// swap(list[g], list[h]);
-				swap(list, g, h);
-				g++;
-				h--;
+	private void quickSort(ArrayList<Player> A, int p, int r) {
+		if (p < r) {
+			int q = sort(A, p, r);
+			quickSort(A, p, q);
+			quickSort(A, q + 1, r);
+		}
+	}
+
+	/**
+	 * Helper class for quicksort
+	 * 
+	 * @param A
+	 *            - takes in the arraylist that is to be sorted
+	 * @param p
+	 *            - takes in the beginning
+	 * @param r
+	 *            - takes in the end
+	 * @return - returns int
+	 */
+	private int sort(ArrayList<Player> A, int p, int r) {
+		int x = A.get(p).getScore(); // pivot
+		int i = p;
+		int j = r;
+		while (true) {
+
+			while (A.get(i).getScore() > x) {
+				i++;
 			}
-		} while (g < h);
-		if (h > first)
-			quickSort(list, first, h);
-		if (g < last)
-			quickSort(list, g, last);
+
+			while (A.get(j).getScore() < x) {
+				j--;
+			}
+			if (i < j) {
+				Player temp = A.get(i);
+				A.set(i, A.get(j));
+				A.set(j, temp);
+			} else {
+				return j;
+			}
+		}
 	}
 
 	/**
@@ -110,6 +130,7 @@ public class Leaderboard {
 				topx.add(null);
 			}
 		}
+
 		return topx;
 	}
 
@@ -129,9 +150,15 @@ public class Leaderboard {
 	 *            - the range at which the board should display information
 	 */
 	public void displayBoard(int range) {
-		ArrayList<Player> temp = topXPlayers(range);
-		for (int k = 1; k <= temp.size(); k++) {
-			System.out.println(k + ") " + temp.get(k).toString());
+		try {
+			System.out.printf("%-10s %7s %18s", "Player Name", "Score", "Time Achieved\n");
+			ArrayList<Player> temp = topXPlayers(range);
+			for (int k = 0; k <= temp.size(); k++) {
+				int rank = k + 1;
+				System.out.println(rank + ") " + temp.get(k).toString());
+			}
+		} catch (Exception e) {
+			// System.out.print("Error:" + e.getMessage() );
 		}
 	}
 
@@ -140,29 +167,32 @@ public class Leaderboard {
 	 * information of the player
 	 */
 	public void txtFile() {
+		FileWriter out = null;
 		try {
-			boolean isFileNeeded = true;
-			File file;
+
 			ArrayList<Player> temp = getTop5();
 
-			do {
-				file = new File("scores.txt");
-				isFileNeeded = false;
-			} while (isFileNeeded == true);
-
-			if (file.createNewFile() == true) {
-				FileWriter out = new FileWriter(file);
-				for (int k = 0; k < temp.size(); k++) {
-					int rank = k + 1;
-					String s = rank + ") " + temp.get(0).toString() + "\n";
-					out.write(s, 0, s.length());
-					out.close();
-				}
-			} else {
-				System.out.println("ERROR: txtfile() method");
+			out = new FileWriter("src/scores.txt");
+			out.write(String.format("%8s %10s %12s", "Name", "Score", "Time\n"));
+			out.flush();
+			for (int k = 0; k < temp.size(); k++) {
+				String s = "";
+				int rank = k + 1;
+				s = rank + ") " + temp.get(k).toString() + "\n";
+				out.write(s);
+				out.flush();
+				System.out.println("File written");
 			}
+			out.close();
+
 		} catch (Exception e) {
 			System.out.print("Error: " + e.getMessage());
+		} finally {
+			try {
+				out.close();
+			} catch (Exception e) {
+				System.out.print("Close error");
+			}
 		}
 	}
 
