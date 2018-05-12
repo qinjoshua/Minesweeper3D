@@ -35,18 +35,15 @@ import javax.swing.Action;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
+import javax.swing.JTextField;
 
-public class MinesUI extends Leaderboard implements MouseListener {
+public class MinesUI implements MouseListener {
 	/** Variable of Board class*/
 	private Board board;
 	/** Length, Width, and Height of board*/
 	private int cells;
 	/** JFrame of GUI*/
 	private JFrame frame;
-	/** Used to calculate run time*/
-	private long time;
-	/** Checks if click is the first click*/
-	private boolean firstClick=true;
 	/** Saves each individual cell/rectangle*/
 	private Polygon land[][][];
 	/** Checks if cell is occupied with an image(#,flag,?)*/
@@ -63,8 +60,8 @@ public class MinesUI extends Leaderboard implements MouseListener {
 	private JLabel explode;
 	/** Stops clicks from having an effect on the game after it's over*/
 	private boolean endGame;
-	/** Text for winning or loose the game */
-	private JTextPane text;
+	/** Panel of win-condition text (for deletion/reset purposes)*/
+	private JPanel text;
 
 	/**
 	 * Launches the application.
@@ -139,8 +136,6 @@ public class MinesUI extends Leaderboard implements MouseListener {
 		});
 		menuBar.add(btnReset);
 		
-		text = new JTextPane();
-		text.setEditable(false);
 		initialize(3, 310);
 	}
 
@@ -153,8 +148,8 @@ public class MinesUI extends Leaderboard implements MouseListener {
 	private void initialize(int c, int length) {
 		cells = c;
 		endGame = false;
-		board = new Board(cells, cells, cells, 0);
-		frame.setBounds(cells * 20, cells * 20, cells * 55 + 60, length);
+		board = new Board(cells, cells, cells, cells*2);
+		frame.setBounds(100, 5, cells * 55 + 68, length);
 		land = new Polygon[cells][cells][cells];
 		occupied = new boolean[cells][cells][cells];
 		panelList = new JPanel[cells][cells][cells];
@@ -174,7 +169,6 @@ public class MinesUI extends Leaderboard implements MouseListener {
 		};
 		clickAlgorithm();
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	/**
@@ -227,7 +221,7 @@ public class MinesUI extends Leaderboard implements MouseListener {
 	 * Checks how many unclicked cells are free of mines
 	 * @return whether game is won
 	 */
-	public int winCheck() {
+	public boolean winCheck() {
 		int count=0;
     	for(int x = 0; x < cells; x++){
     		for(int y = 0; y < cells; y++){
@@ -238,7 +232,9 @@ public class MinesUI extends Leaderboard implements MouseListener {
     			}
     		}
     	}
-    	return count;
+    	if(count==0){
+    		return true;
+    	}return false;
     }
 
 	/**
@@ -259,9 +255,9 @@ public class MinesUI extends Leaderboard implements MouseListener {
 		if (explode != null) {
 			frame.remove(explode);
 		}
-		try{
+		if(text!=null){
 			frame.remove(text);
-		}catch(NullPointerException e){}
+		}
 		frame.repaint();
 	}
 
@@ -311,20 +307,6 @@ public class MinesUI extends Leaderboard implements MouseListener {
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(firstClick==true){
-					time=System.currentTimeMillis();
-					firstClick=false;
-				}
-				if(winCheck()==1){
-					text.setText("You've won!\nTime: "+getTime());
-					panel.add(text);
-					frame.getContentPane().add(panel,BorderLayout.EAST);
-					frame.repaint();
-					frame.revalidate();
-					int score=(cells*cells*cells)-winCheck();
-					addPlayer(new Player("Player",score,getTime()));
-					endGame=true;
-				}
 				if (endGame == false) {
 					for (int i = 0; i < cells; i++) {
 						for (int j = 0; j < cells; j++) {
@@ -354,6 +336,17 @@ public class MinesUI extends Leaderboard implements MouseListener {
 					frame.repaint();
 					frame.revalidate();
 				}
+				if(winCheck()==true){
+					text=new JPanel(){
+						public void paintComponent(Graphics g){
+							g.drawString("You've won!", land[0][0][cells-1].xpoints[1], land[0][0][cells-1].ypoints[2]+12);
+						}
+					};
+					frame.add(text);
+					frame.repaint();
+					frame.revalidate();
+					endGame=true;
+				}
 			}
 		});
 		frame.addMouseListener(this);
@@ -379,7 +372,7 @@ public class MinesUI extends Leaderboard implements MouseListener {
 							System.out.println(h.getMessage() + " " + num);
 						}
 					}else{
-						g.setColor(Color.YELLOW);
+						g.setColor(Color.GRAY);
 						g.fillPolygon(land[i][j][k]);
 					}
 				}
@@ -461,27 +454,21 @@ public class MinesUI extends Leaderboard implements MouseListener {
 	private void endGame(int i, int j, int k) {
 		panel = showMines();
 		endGame = true;
-		text.setText("You've hit a mine!\nTime: "+getTime());
-		int score=(cells*cells*cells)-winCheck();
-		addPlayer(new Player("Player",score,getTime()));
+		
+		text=new JPanel(){
+			public void paintComponent(Graphics g){
+				g.drawString("You've lost!", land[0][0][cells-1].xpoints[1], land[0][0][cells-1].ypoints[2]+12);
+			}
+		};
+		frame.add(text);
+		frame.repaint();
+		frame.revalidate();
+	
 		occupied[i][j][k] = true;
 		panelList[i][j][k] = panel;
 		explode(land[i][j][k]);
 	}
-	/**
-	 * Returns the run time of the game
-	 * @return time
-	 */
-	private String getTime(){
-		String t="";
-		time=System.currentTimeMillis()-time;
-		long minutes = (time / 1000) / 60;
-		long seconds = (time / 1000) % 60;
-		t=minutes+":";
-		if(seconds<10){t+=0;}
-		t+=seconds;
-		return t;
-	}
+
 	/**
 	 * This method is unused
 	 */
